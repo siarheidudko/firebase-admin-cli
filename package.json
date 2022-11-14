@@ -1,0 +1,34 @@
+{
+  "name": "firebase-cli",
+  "description": "Cli for firebase project",
+  "version": "1.0.0",
+  "author": "Siarhei Dudko <slavianich@gmail.com>",
+  "license": "GPL-3.0",
+  "main": "bin/index.js",
+  "bin": {
+    "firebase-cli": "./bin/firebase-cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github:siarheidudko/firebase-cli"
+  },
+  "homepage": "https://www.npmjs.com/package/firebase-cli",
+  "engines": {
+    "node": ">=12"
+  },
+  "keywords": [
+    "firebase",
+    "firestore",
+    "storage",
+    "google",
+    "gcp",
+    "cli",
+    "shell"
+  ],
+  "dependencies": {
+    "firebase-admin": "^11.2.1"
+  }
+}
