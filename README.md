@@ -17,8 +17,8 @@ Command Line Interface with admin rights for Firebase.Auth, Firebase.Firestore, 
 ## Run
 
 ```bash
-    export GOOGLE_APPLICATION_CREDENTIALS=/FULL_PATH_TO_YOUR_SERVICE_ACCOUNT.json
-    firebase-cli
+    > export GOOGLE_APPLICATION_CREDENTIALS=/FULL_PATH_TO_YOUR_SERVICE_ACCOUNT.json
+    > firebase-cli
 ```
 
 ![Firebase Cli Screen](https://github.com/siarheidudko/firebase-cli/raw/main/example.png "Firebase Cli Screen")
