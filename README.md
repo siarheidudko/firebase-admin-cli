@@ -21,4 +21,4 @@ Command Line Interface with admin rights for Firebase.Auth, Firebase.Firestore, 
     firebase-cli
 ```
 
-![Firebase Cli Screen](https://raw.githubusercontent.com/siarheidudko/firebase-cli/main/example.png "Firebase Cli Screen")
+![Firebase Cli Screen](https://github.com/siarheidudko/firebase-cli/raw/main/example.png "Firebase Cli Screen")
