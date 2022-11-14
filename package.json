@@ -4,7 +4,7 @@
   "version": "1.0.2",
   "author": "Siarhei Dudko <slavianich@gmail.com>",
   "license": "GPL-3.0",
-  "main": "bin/index.js",
+  "main": "./bin/firebase-cli.js",
   "bin": {
     "firebase-cli": "./bin/firebase-cli.js"
   },
