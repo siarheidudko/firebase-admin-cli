@@ -1,12 +1,12 @@
 {
   "name": "firebase-admin-cli",
   "description": "Cli for firebase project",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Siarhei Dudko <slavianich@gmail.com>",
   "license": "GPL-3.0",
   "main": "bin/index.js",
   "bin": {
-    "firebase-admin-cli": "./bin/firebase-admin-cli.js"
+    "firebase-cli": "./bin/firebase-cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
