@@ -6,3 +6,4 @@ node_modules
 .npmignore
 package-lock.json
 serviceAccount.json
+example.png
