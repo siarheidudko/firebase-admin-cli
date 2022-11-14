@@ -1,21 +1,21 @@
 {
-  "name": "firebase-cli",
+  "name": "firebase-admin-cli",
   "description": "Cli for firebase project",
   "version": "1.0.0",
   "author": "Siarhei Dudko <slavianich@gmail.com>",
   "license": "GPL-3.0",
   "main": "bin/index.js",
   "bin": {
-    "firebase-cli": "./bin/firebase-cli.js"
+    "firebase-admin-cli": "./bin/firebase-admin-cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "github:siarheidudko/firebase-cli"
+    "url": "github:siarheidudko/firebase-admin-cli"
   },
-  "homepage": "https://www.npmjs.com/package/firebase-cli",
+  "homepage": "https://www.npmjs.com/package/firebase-admin-cli",
   "engines": {
     "node": ">=12"
   },

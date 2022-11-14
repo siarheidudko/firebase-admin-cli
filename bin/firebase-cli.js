@@ -9,7 +9,7 @@ const { lineHandler } = require("../utils/lineHandler");
 
 const projectInfo = getProjectInfo();
 
-const servicename = `Firebase CLI (${projectInfo.serviceAccount.project_id})`;
+const servicename = `Firebase Admin CLI (${projectInfo.serviceAccount.project_id})`;
 
 /**
  * FastCommand type definition
