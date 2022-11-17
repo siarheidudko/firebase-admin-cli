@@ -6,7 +6,7 @@
  * @param {string} globalKeys - global keys (variables and libraries)
  * @returns {string}
  */
-function lineHandler(str, constants, globalKeys) {
+function strHandler(str, constants, globalKeys) {
   // delete space
   str = str.replace(/^ +/, "");
   // search let/var/const
@@ -41,4 +41,4 @@ function lineHandler(str, constants, globalKeys) {
   return str;
 }
 
-module.exports = { lineHandler };
+module.exports = { strHandler };
