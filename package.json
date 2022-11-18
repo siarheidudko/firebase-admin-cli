@@ -1,7 +1,7 @@
 {
   "name": "firebase-admin-cli",
   "description": "Cli for firebase project",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "Siarhei Dudko <slavianich@gmail.com>",
   "license": "GPL-3.0",
   "main": "./bin/firebase-cli.js",
@@ -29,6 +29,6 @@
     "shell"
   ],
   "dependencies": {
-    "firebase-admin": "^11.2.1"
+    "firebase-admin": "^11.3.0"
   }
 }

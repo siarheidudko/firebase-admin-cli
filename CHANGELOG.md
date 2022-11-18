@@ -1,5 +1,11 @@
 # Releases
 
+## 1.1.2 / 2022-11-18
+
+## :tada: Added saving and loading GOOGLE_APPLICATION_CREDENTIALS values
+
+- Added saving and loading GOOGLE_APPLICATION_CREDENTIALS values. Thus, if GOOGLE_APPLICATION_CREDENTIALS, then the last running project will be launched.
+
 ## 1.1.0 / 2022-11-17
 
 ## :tada: Processing of multiline strings

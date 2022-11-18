@@ -41,6 +41,13 @@ const commandsHistoryFilePath = join(__dirname, "..", "./commands.json");
  */
 const historySize = 100;
 
+/**
+ * Saved path to service account key
+ *
+ * @type {string|undefined}
+ */
+let savedServiceAccountKeyPath = undefined;
+
 // load history of commands from file
 if (existsSync(commandsHistoryFilePath)) {
   try {
@@ -51,6 +58,7 @@ if (existsSync(commandsHistoryFilePath)) {
         commandsHistoryFile.commandsHistory.length - historySize - 1
       );
     }
+    savedServiceAccountKeyPath = commandsHistoryFile.serviceAccountKeyPath;
   } catch (err) {}
 }
 
@@ -60,18 +68,21 @@ process.on("uncaughtException", (err, origin) => {
   process.exit(1);
 });
 
-// save history of commands to file
+const projectInfo = getProjectInfo(savedServiceAccountKeyPath);
+
+const servicename = `Firebase Admin CLI (${projectInfo.serviceAccount.project_id})`;
+
+// save history of commands and service account path to file
 process.on("exit", (code) => {
   writeFileSync(
     commandsHistoryFilePath,
-    JSON.stringify({ commandsHistory: terminal.commandsHistory })
+    JSON.stringify({
+      commandsHistory: terminal.commandsHistory,
+      serviceAccountKeyPath: projectInfo.serviceAccountKeyPath,
+    })
   );
   process.exit(code);
 });
-
-const projectInfo = getProjectInfo();
-
-const servicename = `Firebase Admin CLI (${projectInfo.serviceAccount.project_id})`;
 
 /**
  * FastCommand type definition

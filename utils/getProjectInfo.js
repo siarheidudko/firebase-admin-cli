@@ -1,6 +1,5 @@
 "use strict";
 const { readFileSync, existsSync } = require("fs");
-const { join } = require("path");
 
 /**
  * ServiceAccount type definition
@@ -44,10 +43,14 @@ const parseServiceAccount = (str) => {
 /**
  * Get project settings from GOOGLE_APPLICATION_CREDENTIALS
  *
+ * @param {string|undefined} path - path to service account
  * @returns {ProjectSettings}
  */
-const getProjectInfo = () => {
-  const serviceAccountKeyPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+const getProjectInfo = (path) => {
+  const serviceAccountKeyPath =
+    typeof process.env.GOOGLE_APPLICATION_CREDENTIALS === "string"
+      ? process.env.GOOGLE_APPLICATION_CREDENTIALS
+      : path;
   if (typeof serviceAccountKeyPath !== "string")
     throw new Error(
       "The environment variable $GOOGLE_APPLICATION_CREDENTIALS is set incorrectly (this should be the absolute path to the service account)."
