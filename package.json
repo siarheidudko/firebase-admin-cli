@@ -1,7 +1,7 @@
 {
   "name": "firebase-admin-cli",
   "description": "Cli for firebase project",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "author": "Siarhei Dudko <slavianich@gmail.com>",
   "license": "GPL-3.0",
   "main": "./bin/firebase-cli.js",
@@ -23,10 +23,17 @@
     "firebase",
     "firestore",
     "storage",
+    "auth",
+    "database",
+    "rtdb",
+    "authentication",
     "google",
     "gcp",
     "cli",
-    "shell"
+    "shell",
+    "admin",
+    "utility",
+    "tools"
   ],
   "dependencies": {
     "firebase-admin": "^11.3.0"

@@ -8,3 +8,4 @@ package-lock.json
 serviceAccount.json
 example.png
 commands.json
+my_migration_script_test.js

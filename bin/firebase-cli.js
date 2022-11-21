@@ -98,6 +98,9 @@ process.on("exit", (code) => {
 const fastcommands = [];
 
 admin.initializeApp({
+  authDomain: `${projectInfo.serviceAccount.project_id}.firebaseapp.com`,
+  databaseURL: `https://${projectInfo.serviceAccount.project_id}.firebaseio.com`,
+  storageBucket: `${projectInfo.serviceAccount.project_id}.appspot.com`,
   credential: admin.credential.cert(projectInfo.serviceAccount),
 });
 
@@ -117,6 +120,13 @@ fastcommands.push({
   alias: "admin.auth()",
 });
 
+const rtdb = admin.database();
+fastcommands.push({
+  command: "rtdb",
+  title: "Сall firebase database interface",
+  alias: "admin.database()",
+});
+
 const db = admin.firestore();
 fastcommands.push({
   command: "db",
@@ -124,13 +134,11 @@ fastcommands.push({
   alias: "admin.firestore()",
 });
 
-const bucket = admin
-  .storage()
-  .bucket(`${projectInfo.serviceAccount.project_id}.appspot.com`);
+const bucket = admin.storage().bucket();
 fastcommands.push({
   command: "bucket",
   title: "Сall firebase storage/bucket interface",
-  alias: `admin.storage().bucket("${projectInfo.serviceAccount.project_id}.appspot.com")`,
+  alias: `admin.storage().bucket()`,
 });
 
 const types = admin.firestore;

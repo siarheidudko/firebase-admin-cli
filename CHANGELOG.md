@@ -1,5 +1,12 @@
 # Releases
 
+## 1.1.3 / 2022-11-21
+
+## :tada: Added realtime database for short commands
+
+- Added realtime database for short commands.
+- Improved documentation.
+
 ## 1.1.2 / 2022-11-18
 
 ## :tada: Added saving and loading GOOGLE_APPLICATION_CREDENTIALS values
