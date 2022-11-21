@@ -79,7 +79,9 @@ console.log(await db.collection("users").get());
 require("../my_migration_script.js").run();
 ```
 
-```js:my_migration_script.js
+my_migration_script.js
+
+```js
 const admin = require("firebase-admin");
 
 module.exports.run = async () => {

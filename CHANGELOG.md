@@ -1,6 +1,6 @@
 # Releases
 
-## 1.1.3 / 2022-11-21
+## 1.1.4 / 2022-11-21
 
 ## :tada: Added realtime database for short commands
 
