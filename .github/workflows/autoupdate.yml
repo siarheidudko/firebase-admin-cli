@@ -13,6 +13,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       updated: ${{ steps.autoupdate.outputs.updated }}
+      version: ${{ steps.autoupdate.outputs.version }}
     steps:
       - name: Сheckout repo
         id: checkout_repo
@@ -69,8 +70,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ needs.update.outputs.version }}
+          release_name: Release ${{ needs.update.outputs.version }}
           body: |
             see [CHANGELOG.md](https://github.com/siarheidudko/firebase-admin-cli/blob/main/CHANGELOG.md)
           draft: false
