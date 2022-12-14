@@ -22,6 +22,7 @@ jobs:
           path: "tmp"
           ref: "main"
       - name: Set service account
+        id: set_service_account
         run: echo $SERVICE_ACCOUNT>serviceAccount.json
         working-directory: ${{ github.workspace }}/tmp
       - name: Autoupdate
@@ -40,18 +41,23 @@ jobs:
     timeout-minutes: 15
     env:
       NODE_VERSION: 16
+      VERSION: ${{ needs.update.outputs.version }}
     needs: [update]
     if: ${{ needs.update.outputs.updated == 'true' }}
     steps:
       - name: Сheckout repo
+        id: checkout_repo
         uses: actions/checkout@v3
         with:
           ref: "main"
       - name: Use Node.js ${{ env.NODE_VERSION }}
+        id: setup_node
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
+          registry-url: "https://registry.npmjs.org"
       - name: Cache node modules
+        id: use_cache
         uses: actions/cache@v3
         env:
           cache-name: cache-node-modules
@@ -63,6 +69,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Install modules
+        id: install_modules
         run: npm ci
       - name: Create Release
         id: create_release
@@ -70,17 +77,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ needs.update.outputs.version }}
-          release_name: Release ${{ needs.update.outputs.version }}
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
           body: |
             see [CHANGELOG.md](https://github.com/siarheidudko/firebase-admin-cli/blob/main/CHANGELOG.md)
           draft: false
           prerelease: false
-      - name: Set registry npm packages
-        uses: actions/setup-node@v3
-        with:
-          registry-url: "https://registry.npmjs.org"
       - name: Publish package to NPM
+        id: npm_publish
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
