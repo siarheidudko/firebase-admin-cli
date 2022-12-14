@@ -2,7 +2,7 @@ name: Autoupdate
 on:
   push:
     branches:
-      - master
+      - main
 concurrency:
   group: "${{ github.workflow }} @ ${{ github.ref }}"
   cancel-in-progress: false
@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: "tmp"
-          ref: "master"
+          ref: "main"
       - name: Set service account
         run: echo $SERVICE_ACCOUNT>serviceAccount.json
         working-directory: ${{ github.workspace }}/tmp
@@ -31,6 +31,8 @@ jobs:
           author-email: "slavianich@gmail.com"
           author-name: "Siarhei Dudko"
           working-directory: ${{ github.workspace }}/tmp
+          ref: ${{ github.repository }}
+          branch: ref: 'main'
           builds-and-checks: |
             npm test
   release:
@@ -43,7 +45,7 @@ jobs:
     steps:
       - name: Сheckout repo
         uses: actions/checkout@v3
-        ref: "master"
+        ref: "main"
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
@@ -70,7 +72,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           body: |
-            see [CHANGELOG.md](https://github.com/siarheidudko/firebase-admin-cli/blob/master/CHANGELOG.md)
+            see [CHANGELOG.md](https://github.com/siarheidudko/firebase-admin-cli/blob/main/CHANGELOG.md)
           draft: false
           prerelease: false
       - name: Set registry npm packages
