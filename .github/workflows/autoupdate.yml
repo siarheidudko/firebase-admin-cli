@@ -32,7 +32,7 @@ jobs:
           author-name: "Siarhei Dudko"
           working-directory: ${{ github.workspace }}/tmp
           ref: ${{ github.repository }}
-          branch: ref: 'main'
+          branch: "main"
           builds-and-checks: |
             npm test
   release:
