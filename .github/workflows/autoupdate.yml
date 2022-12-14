@@ -27,7 +27,7 @@ jobs:
         working-directory: ${{ github.workspace }}/tmp
       - name: Autoupdate
         id: autoupdate
-        uses: siarheidudko/autoupdater@v2
+        uses: siarheidudko/autoupdater@v3
         with:
           author-email: "slavianich@gmail.com"
           author-name: "Siarhei Dudko"
