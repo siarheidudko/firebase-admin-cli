@@ -1,0 +1,83 @@
+name: Autoupdate
+on:
+  push:
+    branches:
+      - master
+concurrency:
+  group: "${{ github.workflow }} @ ${{ github.ref }}"
+  cancel-in-progress: false
+jobs:
+  update:
+    env:
+      SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      updated: ${{ steps.autoupdate.outputs.updated }}
+    steps:
+      - name: Сheckout repo
+        id: checkout_repo
+        uses: actions/checkout@v3
+        with:
+          path: "tmp"
+          ref: "master"
+      - name: Set service account
+        run: echo $SERVICE_ACCOUNT>serviceAccount.json
+        working-directory: ${{ github.workspace }}/tmp
+      - name: Autoupdate
+        id: autoupdate
+        uses: siarheidudko/autoupdater@v2
+        with:
+          author-email: "slavianich@gmail.com"
+          author-name: "Siarhei Dudko"
+          working-directory: ${{ github.workspace }}/tmp
+          builds-and-checks: |
+            npm test
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NODE_VERSION: 16
+    needs: [update]
+    if: ${{ needs.update.outputs.updated == 'true' }}
+    steps:
+      - name: Сheckout repo
+        uses: actions/checkout@v3
+        ref: "master"
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Cache node modules
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install modules
+        run: npm ci
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            see [CHANGELOG.md](https://github.com/siarheidudko/firebase-admin-cli/blob/master/CHANGELOG.md)
+          draft: false
+          prerelease: false
+      - name: Set registry npm packages
+        uses: actions/setup-node@v3
+        with:
+          registry-url: "https://registry.npmjs.org"
+      - name: Publish package to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
