@@ -12,12 +12,10 @@ const runTest = async () => {
   childProcess.stderr.on("data", (data) => {
     console.error(`${data}`);
   });
-  childProcess.on('error', (data)=> {
-    console.error(`${data}`);
-  });
   await new Promise((res) => {
     setTimeout(res, 1000);
   });
+  console.log('run');
   childProcess.stdin.write(Buffer.from("exit()"));
   await new Promise((res) => {
     setTimeout(res, 200);
@@ -26,6 +24,8 @@ const runTest = async () => {
   await new Promise((res) => {
     setTimeout(res, 1000);
   });
+  console.log('com');
+  console.log('res', childProcess);
   return childProcess.exitCode;
 };
 
