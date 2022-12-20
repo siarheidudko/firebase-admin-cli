@@ -16,16 +16,22 @@ const runTest = async () => {
       res(code);
     });
   });
-  childProcess.stdout.on("data", (data) => {
-    console.info(`${data}`);
-  });
   childProcess.stderr.on("data", (data) => {
     console.error(`${data}`);
   });
-  await new Promise((res) => {
-    setTimeout(res, 1000);
+  const childProcStartEvent = new Promise((res) => {
+    let resolved = false;
+    childProcess.stdout.on("data", (data) => {
+      console.info(`${data}`);
+      if (!resolved && /Firebase Admin CLI \(.*\)>/i.test(`${data}`)) {
+        resolved = true;
+        res();
+      }
+    });
   });
+  await childProcStartEvent;
   childProcess.stdin.write(Buffer.from("exit()"));
+  // multiline input delay
   await new Promise((res) => {
     setTimeout(res, 200);
   });
