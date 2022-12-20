@@ -12,6 +12,9 @@ const runTest = async () => {
   childProcess.stderr.on("data", (data) => {
     console.error(`${data}`);
   });
+  childProcess.on('error', (data)=> {
+    console.error(`${data}`);
+  });
   await new Promise((res) => {
     setTimeout(res, 1000);
   });
