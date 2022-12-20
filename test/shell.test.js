@@ -3,11 +3,12 @@ const { join } = require("path");
 
 // tests
 const runTest = async () => {
-  const childProcess = spawn("node", ["./bin/firebase-cli.js"], {
+  const childProcess = spawn("node", [join(__dirname, "..", "./bin/firebase-cli.js")], {
     cwd: join(__dirname, ".."),
+    env: process.env,
   });
   childProcess.stdout.on("data", (data) => {
-    console.log(`${data}`);
+    console.info(`${data}`);
   });
   childProcess.stderr.on("data", (data) => {
     console.error(`${data}`);
@@ -24,8 +25,8 @@ const runTest = async () => {
   await new Promise((res) => {
     setTimeout(res, 1000);
   });
-  console.log('com');
-  console.log('res', childProcess);
+  console.info('com');
+  console.info('res', childProcess);
   return childProcess.exitCode;
 };
 
