@@ -103,16 +103,17 @@ siarhei@MacBook-Pro firebase-admin-cli % firebase cli
 The following settings are loaded:
 Service Account from file: /Users/siarhei/Projects/firebase-admin-cli/serviceAccount.json
 Project id: fir-engine-f1dcd
-┌─────────┬──────────┬───────────────────────────────────────────┬──────────────────────────────────────────────────────────┐
-│ (index) │ command  │                   title                   │                          alias                           │
-├─────────┼──────────┼───────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
-│    0    │ 'help()' │            'Сall current help'            │                         'help()'                         │
-│    1    │  'auth'  │  'Сall firebase authorization interface'  │                      'admin.auth()'                      │
-│    2    │   'db'   │    'Сall firebase firestore interface'    │                   'admin.firestore()'                    │
-│    3    │ 'bucket' │ 'Сall firebase storage/bucket interface'  │ 'admin.storage().bucket("fir-engine-f1dcd.appspot.com")' │
-│    4    │ 'types'  │ 'Сall firebase firestore types interface' │                    'admin.firestore'                     │
-│    5    │ 'exit()' │              'Exit console'               │               'terminalInterface.close()'                │
-└─────────┴──────────┴───────────────────────────────────────────┴──────────────────────────────────────────────────────────┘
+┌─────────┬──────────┬───────────────────────────────────────────┬─────────────────────────────┐
+│ (index) │ command  │                   title                   │            alias            │
+├─────────┼──────────┼───────────────────────────────────────────┼─────────────────────────────┤
+│    0    │ 'help()' │            'Сall current help'            │          'help()'           │
+│    1    │  'auth'  │  'Сall firebase authorization interface'  │       'admin.auth()'        │
+│    2    │  'rtdb'  │    'Сall firebase database interface'     │     'admin.database()'      │
+│    3    │   'db'   │    'Сall firebase firestore interface'    │     'admin.firestore()'     │
+│    4    │ 'bucket' │ 'Сall firebase storage/bucket interface'  │ 'admin.storage().bucket()'  │
+│    5    │ 'types'  │ 'Сall firebase firestore types interface' │      'admin.firestore'      │
+│    6    │ 'exit()' │              'Exit console'               │ 'terminalInterface.close()' │
+└─────────┴──────────┴───────────────────────────────────────────┴─────────────────────────────┘
 Firebase Admin CLI (fir-engine-f1dcd)>const users = await db
   .collection('users')
   .get();
