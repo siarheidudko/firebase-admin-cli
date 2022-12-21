@@ -43,7 +43,7 @@ const runTest = async () => {
 setTimeout(() => {
   console.error("Timeout.");
   process.exit(1);
-}, 30000);
+}, 10000);
 
 // run tests
 runTest()
