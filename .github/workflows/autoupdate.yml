@@ -12,6 +12,7 @@ jobs:
   update:
     env:
       SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/tmp/serviceAccount.json
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:

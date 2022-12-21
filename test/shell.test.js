@@ -6,7 +6,6 @@ const runTest = async () => {
   const childProcess = spawn(join(__dirname, "..", "./bin/firebase-cli.js"), {
     cwd: join(__dirname, ".."),
     env: process.env,
-    stdio: ["pipe", "pipe", "pipe"],
   });
   const childProcExitEvent = new Promise((res) => {
     childProcess.once("exit", (code) => {
