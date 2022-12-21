@@ -28,6 +28,12 @@ jobs:
         id: set_service_account
         run: echo $SERVICE_ACCOUNT>serviceAccount.json
         working-directory: ${{ github.workspace }}/tmp
+      - name: install dep
+        run: npm ci
+        working-directory: ${{ github.workspace }}/tmp
+      - name: test
+        run: npm test
+        working-directory: ${{ github.workspace }}/tmp
       - name: Autoupdate
         id: autoupdate
         uses: siarheidudko/autoupdater@v3
