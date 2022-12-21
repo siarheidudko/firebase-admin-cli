@@ -3,14 +3,10 @@ const { join } = require("path");
 
 // tests
 const runTest = async () => {
-  const childProcess = spawn(
-    "node",
-    [join(__dirname, "..", "./bin/firebase-cli.js")],
-    {
-      cwd: join(__dirname, ".."),
-      env: process.env,
-    }
-  );
+  const childProcess = spawn(join(__dirname, "..", "./bin/firebase-cli.js"), {
+    cwd: join(__dirname, ".."),
+    env: process.env,
+  });
   const childProcExitEvent = new Promise((res) => {
     childProcess.once("exit", (code) => {
       res(code);
@@ -39,14 +35,17 @@ const runTest = async () => {
   return await childProcExitEvent;
 };
 
-// test timeout (for safety)
-setTimeout(() => {
-  console.error("Timeout.");
-  process.exit(1);
-}, 10000);
-
-// run tests
-runTest()
+// run safe tests
+Promise.race([
+  // run tests
+  runTest(),
+  // test timeout (for safety)
+  new Promise((res, rej) => {
+    setTimeout(() => {
+      rej(new Error("Timeout"));
+    }, 10000);
+  }),
+])
   .then((code) => {
     if (code !== 0) {
       console.error(`Exit code: ${code}`);
