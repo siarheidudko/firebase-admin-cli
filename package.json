@@ -1,7 +1,7 @@
 {
   "name": "firebase-admin-cli",
   "description": "Cli for firebase project",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "author": "Siarhei Dudko <slavianich@gmail.com>",
   "license": "GPL-3.0",
   "main": "./bin/firebase-cli.js",
