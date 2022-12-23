@@ -37,6 +37,6 @@
     "tools"
   ],
   "dependencies": {
-    "firebase-admin": "^11.4.0"
+    "firebase-admin": "^11.4.1"
   }
 }
