@@ -1,3 +1,8 @@
+# 1.1.8 / 2023-04-07
+
+### :tada: Enhancements
+- Updated dependencies: firebase-admin
+
 # 1.1.7 / 2023-01-20
 
 ### :tada: Enhancements
