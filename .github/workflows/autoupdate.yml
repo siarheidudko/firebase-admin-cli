@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      NODE_VERSION: 16
+      NODE_VERSION: 20
       VERSION: ${{ needs.update.outputs.version }}
     needs: [update]
     if: ${{ needs.update.outputs.updated == 'true' }}
