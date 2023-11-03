@@ -1,6 +1,6 @@
 # firebase-admin-cli
 
-Command Line Interface with admin rights for Firebase Project (Auth, Realtime Database, Firestore, Storage, etc.).
+Empower Your Firebase Project with Ultimate Control: Unleash the Full Potential of Firebase's Auth, Realtime Database, Firestore, Storage, and More, All Through a Powerful Command Line Interface with Admin Privileges!
 
 [![npm](https://img.shields.io/npm/v/firebase-admin-cli.svg)](https://www.npmjs.com/package/firebase-admin-cli)
 [![npm](https://img.shields.io/npm/dy/firebase-admin-cli.svg)](https://www.npmjs.com/package/firebase-admin-cli)
