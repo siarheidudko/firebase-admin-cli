@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Сheckout repo
         id: checkout_repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: "tmp"
           ref: "main"
@@ -42,25 +42,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      NODE_VERSION: 20
+      NODE_VERSION: 22
       VERSION: ${{ needs.update.outputs.version }}
     needs: [update]
     if: ${{ needs.update.outputs.updated == 'true' }}
     steps:
       - name: Сheckout repo
         id: checkout_repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: "main"
       - name: Use Node.js ${{ env.NODE_VERSION }}
         id: setup_node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: "https://registry.npmjs.org"
       - name: Cache node modules
         id: use_cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: cache-node-modules
         with:
