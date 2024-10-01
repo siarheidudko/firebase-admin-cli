@@ -1,3 +1,8 @@
+# 1.1.24 / 2024-10-01
+
+### :tada: Enhancements
+- Updated dependencies: firebase-admin
+
 # 1.1.23 / 2024-09-13
 
 ### :tada: Enhancements
