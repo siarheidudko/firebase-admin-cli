@@ -76,10 +76,10 @@ console.log(await db.collection("users").get());
 - You can even execute your script from a file using require();
 
 ```js
-require("../my_migration_script.js").run();
+require("../examples/my_migration_script_test.js").run();
 ```
 
-my_migration_script.js
+my_migration_script_test.js
 
 ```js
 const admin = require("firebase-admin");
@@ -95,30 +95,66 @@ module.exports.run = async () => {
 
 ```bash
 siarhei@MacBook-Pro firebase-admin-cli % export GOOGLE_APPLICATION_CREDENTIALS=/Users/siarhei/Projects/firebase-admin-cli/serviceAccount.json
-siarhei@MacBook-Pro firebase-admin-cli % firebase cli
+siarhei@MacBook-Pro firebase-admin-cli % firebase cli --with=../examples/my_extension.js
 
-> firebase-admin-cli@1.1.0 start
+> firebase-admin-cli@1.0.0 start
 > node ./bin/firebase-cli.js
 
 The following settings are loaded:
-Service Account from file: /Users/siarhei/Projects/firebase-admin-cli/serviceAccount.json
-Project id: fir-engine-f1dcd
-┌─────────┬──────────┬───────────────────────────────────────────┬─────────────────────────────┐
-│ (index) │ command  │                   title                   │            alias            │
-├─────────┼──────────┼───────────────────────────────────────────┼─────────────────────────────┤
-│    0    │ 'help()' │            'Сall current help'            │          'help()'           │
-│    1    │  'auth'  │  'Сall firebase authorization interface'  │       'admin.auth()'        │
-│    2    │  'rtdb'  │    'Сall firebase database interface'     │     'admin.database()'      │
-│    3    │   'db'   │    'Сall firebase firestore interface'    │     'admin.firestore()'     │
-│    4    │ 'bucket' │ 'Сall firebase storage/bucket interface'  │ 'admin.storage().bucket()'  │
-│    5    │ 'types'  │ 'Сall firebase firestore types interface' │      'admin.firestore'      │
-│    6    │ 'exit()' │              'Exit console'               │ 'terminalInterface.close()' │
-└─────────┴──────────┴───────────────────────────────────────────┴─────────────────────────────┘
-Firebase Admin CLI (fir-engine-f1dcd)>const users = await db
-  .collection('users')
-  .get();
-console.log('users', users.docs);
-Firebase Admin CLI (fir-engine-f1dcd)>
-users []
-Firebase Admin CLI (fir-engine-f1dcd)>
+Service Account from file: /Users/siarhei/Projects/ireceipt-pro/firebase/functions/accounts/production.json
+Project id: ireceipt-pro
+Extension is loaded: ../examples/my_extension.js
+The following methods are now available to you: ext.printFile
+┌─────────┬───────────┬───────────────────────────────────────────┬─────────────────────────────┐
+│ (index) │ command   │ title                                     │ alias                       │
+├─────────┼───────────┼───────────────────────────────────────────┼─────────────────────────────┤
+│ 0       │ 'help()'  │ 'Сall current help'                       │ 'help()'                    │
+│ 1       │ 'auth'    │ 'Сall firebase authorization interface'   │ 'admin.auth()'              │
+│ 2       │ 'rtdb'    │ 'Сall firebase database interface'        │ 'admin.database()'          │
+│ 3       │ 'db'      │ 'Сall firebase firestore interface'       │ 'admin.firestore()'         │
+│ 4       │ 'storage' │ 'Сall firebase storage interface'         │ 'admin.storage()'           │
+│ 5       │ 'bucket'  │ 'Сall firebase storage/bucket interface'  │ 'admin.storage().bucket()'  │
+│ 6       │ 'types'   │ 'Сall firebase firestore types interface' │ 'admin.firestore'           │
+│ 7       │ 'exit()'  │ 'Exit console'                            │ 'terminalInterface.close()' │
+└─────────┴───────────┴───────────────────────────────────────────┴─────────────────────────────┘
+Firebase Admin CLI (ireceipt-pro)>
+```
+
+## Extensions
+
+You can create your own extensions for the application and run them inside the console.
+
+If you want to use extensions, just list them using the prefix `--with=`, for example:
+
+```bash
+siarhei@MacBook-Pro firebase-admin-cli % firebase cli --with=../examples/my_extension.js --with=../examples/my_extension_2.js --with=../examples/my_extension_3.js
+```
+
+After that, you can use the extension commands. For example:
+
+```js
+ext.printFile("users/test_file.json")
+```
+
+Here is example of the JavaScript extension (also you can use TypeScript):
+
+```js
+const { tools } = require("firebase-admin-cli");
+
+/**
+ * Print a GCS file data
+ *
+ * Example `ext.printFile("users/test_file.json");`
+ * @param {String} path - file path
+ */
+const printFile = async (path) => {
+  console.log(
+    await tools.bucket
+      .file(path)
+      .download()
+      .then(([buf]) => buf.toString())
+  );
+};
+
+module.exports = { printFile };
 ```

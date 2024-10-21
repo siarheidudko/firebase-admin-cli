@@ -29,6 +29,9 @@ jobs:
             ${{ runner.os }}-
       - name: Install modules
         run: npm ci
+      - name: Build tools
+        id: build_tools
+        run: npm build
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1

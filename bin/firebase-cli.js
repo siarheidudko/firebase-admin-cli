@@ -6,7 +6,7 @@ const process = require("process");
 const { createInterface } = require("readline");
 const admin = require("firebase-admin");
 const { writeFileSync, existsSync, readFileSync } = require("fs");
-const { join } = require("path");
+const { join, normalize } = require("path");
 const { getProjectInfo } = require("../utils/getProjectInfo");
 const { strHandler } = require("../utils/strHandler");
 
@@ -97,7 +97,7 @@ process.on("exit", (code) => {
  */
 const fastcommands = [];
 
-admin.initializeApp({
+const app = admin.initializeApp({
   authDomain: `${projectInfo.serviceAccount.project_id}.firebaseapp.com`,
   databaseURL: `https://${projectInfo.serviceAccount.project_id}.firebaseio.com`,
   storageBucket: `${projectInfo.serviceAccount.project_id}.appspot.com`,
@@ -134,6 +134,13 @@ fastcommands.push({
   alias: "admin.firestore()",
 });
 
+const storage = admin.storage();
+fastcommands.push({
+  command: "storage",
+  title: "Сall firebase storage interface",
+  alias: `admin.storage()`,
+});
+
 const bucket = admin.storage().bucket();
 fastcommands.push({
   command: "bucket",
@@ -147,6 +154,46 @@ fastcommands.push({
   title: "Сall firebase firestore types interface",
   alias: "admin.firestore",
 });
+
+const tools = Object.freeze({
+  projectInfo,
+  admin,
+  app,
+  auth,
+  rtdb,
+  db,
+  storage,
+  bucket,
+  types,
+});
+global.tools = tools;
+
+global.ext = {};
+if (process.argv?.length > 2) {
+  const extRegSource = "^--with=";
+  const extRegCheck = new RegExp(`${extRegSource}.+`);
+  const extRegRepl = new RegExp(`${extRegSource}`);
+  const extensions =
+    process.argv
+      .filter((e) => extRegCheck.test(e))
+      .map((e) => normalize(e.replace(extRegRepl, "").replace(/'"/g, "")))
+      .filter((e) => !!e) ?? [];
+  extensions.forEach((path) => {
+    try {
+      Object.assign(global.ext, require(path));
+      console.log(`Extension is loaded: ${path}`);
+    } catch (err) {
+      console.error(`Extension isn't loaded: ${path}`, err);
+    }
+  });
+  if (extensions.length) {
+    console.log(
+      `The following methods are now available to you: ${Object.keys(global.ext)
+        .map((k) => `ext.${k}`)
+        .join(", ")}`
+    );
+  }
+}
 
 const terminalInterface = createInterface({
   input: process.stdin,

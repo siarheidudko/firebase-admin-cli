@@ -1,51 +1,67 @@
+# 1.2.0 / 2024-10-21
+
+### :tada: Enhancements
+
+- Added support for extensions
+
 # 1.1.24 / 2024-10-01
 
 ### :tada: Enhancements
+
 - Updated dependencies: firebase-admin
 
 # 1.1.23 / 2024-09-13
 
 ### :tada: Enhancements
+
 - Updated dependencies: firebase-admin
 
 # 1.1.22 / 2024-08-23
 
 ### :tada: Enhancements
+
 - Updated dependencies: firebase-admin
 
 # 1.1.21 / 2024-08-09
 
 ### :tada: Enhancements
+
 - Updated dependencies: firebase-admin
 
 # 1.1.20 / 2024-07-26
 
 ### :tada: Enhancements
+
 - Updated dependencies: firebase-admin
 
 # 1.1.19 / 2024-06-21
 
 ### :tada: Enhancements
+
 - Updated dependencies: firebase-admin
 
 # 1.1.18 / 2024-05-22
 
 ### :tada: Enhancements
+
 - Updated dependencies: firebase-admin
 
 # 1.1.17 / 2024-04-17
 
 ### :tada: Enhancements
+
 - Updated dependencies: firebase-admin
 
 # 1.1.16 / 2023-12-08
 
 ### :tada: Enhancements
+
 - Updated dependencies: firebase-admin
 
 # 1.1.15 / 2023-11-24
 
 ### :tada: Enhancements
+
 - Updated dependencies: firebase-admin
 
 # 1.1.14 / 2023-10-11
