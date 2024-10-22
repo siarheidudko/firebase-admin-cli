@@ -1,7 +1,7 @@
 {
   "name": "firebase-admin-cli",
   "description": "Cli for firebase project",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "Siarhei Dudko <sergey@dudko.dev>",
   "funding": [
     {
@@ -26,7 +26,7 @@
   "scripts": {
     "start": "node ./bin/firebase-cli.js",
     "test": "node ./test/shell.test.js",
-    "build": "rm -rf lib && ./node_modules/.bin/tsc"
+    "build": "rm -rf lib && ./node_modules/.bin/tsc --declaration"
   },
   "repository": {
     "type": "git",

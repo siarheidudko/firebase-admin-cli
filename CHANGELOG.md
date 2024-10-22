@@ -1,3 +1,9 @@
+# 1.2.1 / 2024-10-22
+
+### :tada: Enhancements
+
+- Fix: added type declaration
+
 # 1.2.0 / 2024-10-21
 
 ### :tada: Enhancements
