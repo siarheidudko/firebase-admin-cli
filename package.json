@@ -56,6 +56,6 @@
     "firebase-admin": "^13.5.0"
   },
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   }
 }
