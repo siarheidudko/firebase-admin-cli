@@ -2,9 +2,14 @@ name: Autoupdate
 on:
   schedule:
     - cron: "0 1 * * *"
+  workflow_dispatch:
+  workflow_call:
 concurrency:
   group: "${{ github.workflow }} @ ${{ github.ref }}"
   cancel-in-progress: false
+permissions:
+  contents: write
+  actions: write
 jobs:
   update:
     env:
@@ -38,58 +43,14 @@ jobs:
           builds-and-checks: |
             npm test
           debug: "true"
-  release:
+  deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      NODE_VERSION: 22
-      VERSION: ${{ needs.update.outputs.version }}
-    needs: [update]
-    if: ${{ needs.update.outputs.updated == 'true' }}
+    needs: update
+    if: needs.update.outputs.updated == 'true'
     steps:
-      - name: Сheckout repo
-        id: checkout_repo
-        uses: actions/checkout@v4
+      - name: Trigger Build and Deploy Workflow
+        uses: benc-uk/workflow-dispatch@v1
         with:
-          ref: "main"
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        id: setup_node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: "https://registry.npmjs.org"
-      - name: Cache node modules
-        id: use_cache
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: Install modules
-        id: install_modules
-        run: npm ci
-      - name: Build tools
-        id: build_tools
-        run: npm run build
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
-          body: |
-            see [CHANGELOG.md](https://github.com/siarheidudko/firebase-admin-cli/blob/main/CHANGELOG.md)
-          draft: false
-          prerelease: false
-      - name: Publish package to NPM
-        id: npm_publish
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          workflow: build-and-deploy.yml
+          ref: main
+          inputs: '{ "tag": "${{ needs.update.outputs.version }}" }'
