@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Сheckout repo
         id: checkout_repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: "tmp"
           ref: "main"
