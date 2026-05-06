@@ -86,6 +86,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          allowed_bots: "*"
           prompt: ${{ steps.prep.outputs.prompt }}
           claude_args: |
             --allowedTools "Edit,Write,MultiEdit,Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git fetch:*),Bash(git restore:*),Bash(git checkout:*),Bash(rm:*),Bash(mkdir:*),Bash(cat:*),Bash(ls:*)"
