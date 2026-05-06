@@ -22,33 +22,18 @@ jobs:
       SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
       GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/serviceAccount.json
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      - name: Configure git
-        run: |
+      - uses: actions/checkout@v5
+        with: { ref: main, token: "${{ secrets.GITHUB_TOKEN }}", fetch-depth: 0 }
+      - run: |
           git config user.email "slavianich@gmail.com"
           git config user.name "Siarhei Dudko"
-
-      - name: Create autoupdate branch
-        run: |
+      - run: |
           git checkout -b "$AUTOUPDATE_BRANCH"
           git push -u origin "$AUTOUPDATE_BRANCH"
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Set service account
-        run: echo "$SERVICE_ACCOUNT" > serviceAccount.json
-
-      - name: Autoupdate
-        id: autoupdate
+      - uses: actions/setup-node@v6
+        with: { node-version: 24 }
+      - run: echo "$SERVICE_ACCOUNT" > serviceAccount.json
+      - id: autoupdate
         continue-on-error: true
         uses: siarheidudko/autoupdater@v6
         with:
@@ -63,18 +48,14 @@ jobs:
           debug: "true"
           ignore-packages: |
             @types/node
-
-      - name: Persist autoupdater work on failure
-        if: steps.autoupdate.outcome == 'failure'
+      - if: steps.autoupdate.outcome == 'failure'
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             git add -A
             git commit -m "chore(deps): autoupdater partial update"
           fi
           git push --force-with-lease origin "HEAD:$AUTOUPDATE_BRANCH" || true
-
-      - name: Fallback baseline update if branch still empty vs main
-        if: steps.autoupdate.outcome == 'failure'
+      - if: steps.autoupdate.outcome == 'failure'
         run: |
           git fetch origin main
           if git diff --quiet origin/main; then
@@ -86,16 +67,12 @@ jobs:
               git push origin "HEAD:$AUTOUPDATE_BRANCH"
             fi
           fi
-
-      - name: Ensure labels exist
-        env:
+      - env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh label create autoupdate --color "0e8a16" --description "Automated dependency update PRs" --force || true
           gh label create needs-claude --color "d4c5f9" --description "Needs Claude GitHub App to fix" --force || true
-
-      - name: Check for diff vs main on remote branch
-        id: diff
+      - id: diff
         if: always()
         run: |
           git fetch origin main "$AUTOUPDATE_BRANCH"
@@ -104,20 +81,13 @@ jobs:
           else
             echo "has_diff=true" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Read package version from branch
-        id: pkg
+      - id: pkg
         if: steps.diff.outputs.has_diff == 'true'
         run: |
           VERSION=$(git show "origin/$AUTOUPDATE_BRANCH:package.json" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).version))")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Open PR (autoupdater succeeded)
-        id: pr_success
-        if: |
-          steps.autoupdate.outcome == 'success' &&
-          steps.autoupdate.outputs.updated == 'true' &&
-          steps.diff.outputs.has_diff == 'true'
+      - id: pr_success
+        if: steps.autoupdate.outcome == 'success' && steps.autoupdate.outputs.updated == 'true' && steps.diff.outputs.has_diff == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -130,15 +100,9 @@ jobs:
           PR-checks must be green before merge.
           EOF
           )
-          PR_URL=$(gh pr create \
-            --base main \
-            --head "$AUTOUPDATE_BRANCH" \
-            --title "chore(deps): autoupdate v${{ steps.pkg.outputs.version }}" \
-            --body "$BODY")
+          PR_URL=$(gh pr create --base main --head "$AUTOUPDATE_BRANCH" --title "chore(deps): autoupdate v${{ steps.pkg.outputs.version }}" --body "$BODY")
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
-
-      - name: Open draft PR (autoupdater failed)
-        id: pr_failure
+      - id: pr_failure
         if: steps.autoupdate.outcome == 'failure' && steps.diff.outputs.has_diff == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -155,37 +119,21 @@ jobs:
               npm run build
               npm test
 
-          See **Actions → Claude** for progress. The "PR checks" workflow will
-          re-run on each new commit to confirm a green state before merge.
+          See **Actions → Claude** for progress.
           EOF
           )
-          PR_URL=$(gh pr create \
-            --base main \
-            --head "$AUTOUPDATE_BRANCH" \
-            --title "chore(deps): autoupdate (needs claude fix)" \
-            --body "$BODY" \
-            --draft)
+          PR_URL=$(gh pr create --base main --head "$AUTOUPDATE_BRANCH" --title "chore(deps): autoupdate (needs claude fix)" --body "$BODY" --draft)
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
-
-      - name: Trigger PR checks (GITHUB_TOKEN can't auto-trigger pull_request)
-        if: steps.pr_success.outputs.pr_url != '' || steps.pr_failure.outputs.pr_url != ''
+      - if: steps.pr_success.outputs.pr_url != '' || steps.pr_failure.outputs.pr_url != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh workflow run pr-checks.yml --ref "$AUTOUPDATE_BRANCH" || true
-
-      - name: Dispatch Claude to fix the failed autoupdate
-        if: steps.pr_failure.outputs.pr_url != ''
+        run: gh workflow run pr-checks.yml --ref "$AUTOUPDATE_BRANCH" || true
+      - if: steps.pr_failure.outputs.pr_url != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          gh workflow run claude.yml --ref main \
-            -f branch="$AUTOUPDATE_BRANCH" \
-            -f run_url="$RUN_URL"
-
-      - name: Post info comment on the failure PR
-        if: steps.pr_failure.outputs.pr_url != ''
+        run: gh workflow run claude.yml --ref main -f branch="$AUTOUPDATE_BRANCH" -f run_url="$RUN_URL"
+      - if: steps.pr_failure.outputs.pr_url != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ steps.pr_failure.outputs.pr_url }}
@@ -198,9 +146,7 @@ jobs:
           EOF
           )
           gh pr comment "$PR_URL" --body "$COMMENT"
-
-      - name: Add labels to PR
-        if: steps.pr_success.outputs.pr_url != '' || steps.pr_failure.outputs.pr_url != ''
+      - if: steps.pr_success.outputs.pr_url != '' || steps.pr_failure.outputs.pr_url != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ steps.pr_success.outputs.pr_url || steps.pr_failure.outputs.pr_url }}
@@ -210,8 +156,5 @@ jobs:
           else
             gh pr edit "$PR_URL" --add-label autoupdate || true
           fi
-
-      - name: Cleanup branch when nothing to ship
-        if: always() && steps.diff.outputs.has_diff != 'true'
-        run: |
-          git push origin --delete "$AUTOUPDATE_BRANCH" || true
+      - if: always() && steps.diff.outputs.has_diff != 'true'
+        run: git push origin --delete "$AUTOUPDATE_BRANCH" || true

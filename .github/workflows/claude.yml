@@ -10,14 +10,8 @@ on:
     types: [opened, assigned]
   workflow_dispatch:
     inputs:
-      branch:
-        description: "Branch Claude should operate on (used by autoupdate flow)"
-        required: true
-        type: string
-      run_url:
-        description: "URL of the failing autoupdate run, included in the prompt for context"
-        required: false
-        type: string
+      branch: { required: true, type: string }
+      run_url: { required: false, type: string }
 concurrency:
   group: "${{ github.workflow }} @ ${{ github.event.issue.number || github.event.pull_request.number || github.event.inputs.branch }}"
   cancel-in-progress: false
@@ -38,14 +32,11 @@ jobs:
       id-token: write
       actions: read
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.inputs.branch || github.ref }}
           fetch-depth: 1
-
-      - name: Prepare autoupdate-fix prompt
-        if: github.event_name == 'workflow_dispatch'
+      - if: github.event_name == 'workflow_dispatch'
         id: prep
         env:
           BRANCH: ${{ github.event.inputs.branch }}
@@ -70,20 +61,15 @@ jobs:
             if any of them is red.
           - If \`npm install\` or \`npm ci\` is needed, run it first with
             \`--no-audit --no-fund\` and confirm exit 0.
-          - Limit edits to compatibility shims (types, renamed exports,
-            breaking-change adjustments, eslint-config tweaks for new rule
-            defaults). Do NOT change product logic.
+          - Limit edits to compatibility shims.
           - Do NOT bump the package version.
-          - When all are green, push and stop. CI's \`PR checks\`
-            workflow will re-verify on the PR.
+          - When all are green, push and stop.
 
-          See CLAUDE.md in the repo root for the full project conventions.
+          See CLAUDE.md in the repo root.
           EOF
             echo PROMPT_EOF
           } >> "$GITHUB_OUTPUT"
-
-      - name: Run Claude Code
-        uses: anthropics/claude-code-action@v1
+      - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           allowed_bots: "*"
