@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      NODE_VERSION: 24
+      NODE_VERSION: 22
     steps:
       - name: Сheckout repo
         uses: actions/checkout@v4
