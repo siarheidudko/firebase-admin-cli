@@ -10,42 +10,9 @@ concurrency:
 permissions:
   contents: read
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    env:
-      NODE_VERSION: 22
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Cache node modules
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
-      - name: Run builder
-        run: npm run build
-      - name: Archiving lib directory
-        uses: actions/upload-artifact@v4
-        with:
-          name: lib
-          path: ${{ github.workspace }}/lib
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: build
     env:
       SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
       GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/serviceAccount.json
@@ -55,11 +22,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-      - name: Unarchiving lib directory
-        uses: actions/download-artifact@v4
-        with:
-          name: lib
-          path: ${{ github.workspace }}/lib
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -76,7 +38,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci
       - name: Set service account
         run: echo "$SERVICE_ACCOUNT" > serviceAccount.json
       - name: Run test
