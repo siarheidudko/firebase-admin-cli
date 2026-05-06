@@ -75,4 +75,4 @@ jobs:
           allowed_bots: "*"
           prompt: ${{ steps.prep.outputs.prompt }}
           claude_args: |
-            --allowedTools "Edit,Write,MultiEdit,Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git fetch:*),Bash(git restore:*),Bash(git checkout:*),Bash(rm:*),Bash(mkdir:*),Bash(cat:*),Bash(ls:*)"
+            --allowedTools "Edit,Write,MultiEdit,Bash(git:*),Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(rm:*),Bash(mkdir:*),Bash(cat:*),Bash(ls:*),Bash(echo:*),Bash(grep:*),Bash(find:*),Bash(sed:*),Bash(awk:*),Bash(head:*),Bash(tail:*),Bash(diff:*),Bash(mv:*),Bash(cp:*),Bash(touch:*)"
