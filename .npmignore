@@ -4,6 +4,7 @@ docs
 node_modules
 .gitignore
 .npmignore
+CLAUDE.md
 package-lock.json
 serviceAccount.json
 example.png
