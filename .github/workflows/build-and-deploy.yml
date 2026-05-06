@@ -1,20 +1,13 @@
 name: Build and deploy
 on:
   push:
-    tags:
-      - "v*.*.*"
+    tags: ["v*.*.*"]
   workflow_dispatch:
     inputs:
-      tag:
-        description: "Tag version to deploy (e.g., v1.2.3)"
-        required: true
-        type: string
+      tag: { required: true, type: string }
   workflow_call:
     inputs:
-      tag:
-        description: "Tag version to deploy"
-        required: true
-        type: string
+      tag: { required: true, type: string }
 permissions:
   id-token: write
   contents: write
@@ -23,16 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      NODE_VERSION: 22
+      NODE_VERSION: 24
     steps:
-      - name: Сheckout repo
-        uses: actions/checkout@v4
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Cache node modules
-        uses: actions/cache@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with: { node-version: "${{ env.NODE_VERSION }}" }
+      - uses: actions/cache@v4
         env:
           cache-name: cache-node-modules
         with:
@@ -42,22 +31,16 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - name: Install modules
-        run: npm ci
-      - name: Build tools
-        id: build_tools
-        run: npm run build
-      - name: Set RELEASE_VERSION env
-        run: |
+      - run: npm ci
+      - run: npm run build
+      - run: |
           if [ -n "${{ inputs.tag }}" ]; then
             RELEASE_VERSION="${{ inputs.tag }}"
           else
             RELEASE_VERSION="${GITHUB_REF#refs/*/}"
           fi
           echo "RELEASE_VERSION=${RELEASE_VERSION#v}" >> $GITHUB_ENV
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.RELEASE_VERSION }}
           name: v${{ env.RELEASE_VERSION }}
@@ -66,13 +49,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
           prerelease: ${{ !!endsWith(env.RELEASE_VERSION, '-beta') }}
-      - name: Set registry npm packages
-        if: ${{ !endsWith(env.RELEASE_VERSION, '-beta') }}
-        uses: actions/setup-node@v4
+      - if: ${{ !endsWith(env.RELEASE_VERSION, '-beta') }}
+        uses: actions/setup-node@v6
         with:
           registry-url: "https://registry.npmjs.org"
-      - name: Update npm to latest version
-        run: npm install -g npm@latest
-      - name: Publish package to NPM
-        if: ${{ !endsWith(env.RELEASE_VERSION, '-beta') }}
+      - run: npm install -g npm@latest
+      - if: ${{ !endsWith(env.RELEASE_VERSION, '-beta') }}
         run: npm publish
