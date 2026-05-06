@@ -34,7 +34,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
       - name: Run builder
         run: npm run build
       - name: Archiving lib directory
@@ -76,7 +76,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
       - name: Set service account
         run: echo "$SERVICE_ACCOUNT" > serviceAccount.json
       - name: Run test
