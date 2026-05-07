@@ -24,7 +24,7 @@ jobs:
       GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/serviceAccount.json
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: main
           token: ${{ secrets.GITHUB_TOKEN }}

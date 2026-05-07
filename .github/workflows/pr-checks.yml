@@ -17,13 +17,13 @@ jobs:
       NODE_VERSION: 24
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Cache node modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -34,7 +34,7 @@ jobs:
       - name: Run builder
         run: npm run build
       - name: Archive build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dist
           path: ${{ github.workspace }}/lib
@@ -51,9 +51,9 @@ jobs:
       GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/serviceAccount.json
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: ${{ github.workspace }}/lib
@@ -62,7 +62,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Cache node modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
