@@ -124,7 +124,9 @@ jobs:
             --base main \
             --head "$AUTOUPDATE_BRANCH" \
             --title "chore(deps): autoupdate v${{ steps.pkg.outputs.version }}" \
-            --body "$BODY")
+            --body "$BODY" \
+            --assignee siarheidudko \
+            --reviewer siarheidudko)
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
       - name: Open draft PR (autoupdater failed)
         id: pr_failure
@@ -153,7 +155,9 @@ jobs:
             --head "$AUTOUPDATE_BRANCH" \
             --title "chore(deps): autoupdate (needs claude fix)" \
             --body "$BODY" \
-            --draft)
+            --draft \
+            --assignee siarheidudko \
+            --reviewer siarheidudko)
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
       - name: Trigger PR checks (GITHUB_TOKEN can't auto-trigger pull_request)
         if: steps.pr_success.outputs.pr_url != '' || steps.pr_failure.outputs.pr_url != ''
