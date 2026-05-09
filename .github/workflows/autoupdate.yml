@@ -54,11 +54,11 @@ jobs:
           ref: ${{ github.repository }}
           branch: ${{ env.AUTOUPDATE_BRANCH }}
           builds-and-checks: |
-            npm run build
-            npm test
+              npm run build
+              npm test
           debug: "true"
           ignore-packages: |
-            @types/node
+              @types/node
       - name: Persist autoupdater work on failure
         if: steps.autoupdate.outcome == 'failure'
         run: |
@@ -128,7 +128,15 @@ jobs:
             --assignee siarheidudko \
             --reviewer siarheidudko)
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
-      - name: Open draft PR (autoupdater failed)
+      - name: Enable auto-merge on success PR
+        if: steps.pr_success.outputs.pr_url != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ steps.pr_success.outputs.pr_url }}
+        run: |
+          gh api repos/${{ github.repository }} --method PATCH -f allow_auto_merge=true || true
+          gh pr merge "$PR_URL" --auto --squash || true
+      - name: Open PR (autoupdater failed)
         id: pr_failure
         if: steps.autoupdate.outcome == 'failure' && steps.diff.outputs.has_diff == 'true'
         env:
@@ -143,8 +151,8 @@ jobs:
           A Claude session has been dispatched to push fixes onto this branch
           so the following commands all exit 0:
 
-              npm run build
-              npm test
+                npm run build
+                npm test
 
           Claude will leave a status comment on this PR when it finishes.
           PR-checks will re-run on each new commit.
@@ -155,7 +163,6 @@ jobs:
             --head "$AUTOUPDATE_BRANCH" \
             --title "chore(deps): autoupdate (needs claude fix)" \
             --body "$BODY" \
-            --draft \
             --assignee siarheidudko \
             --reviewer siarheidudko)
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
