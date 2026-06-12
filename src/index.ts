@@ -1,4 +1,10 @@
-import type admin from "firebase-admin";
+import type * as admin from "firebase-admin";
+import type { App } from "firebase-admin/app";
+import type { Auth } from "firebase-admin/auth";
+import type { Database } from "firebase-admin/database";
+import type { Firestore } from "firebase-admin/firestore";
+import type { Storage } from "firebase-admin/storage";
+import type * as firestoreNs from "firebase-admin/firestore";
 import { type Bucket } from "@google-cloud/storage";
 
 export interface ServiceAccount {
@@ -24,13 +30,13 @@ export const tools = (
     tools: Readonly<{
       projectInfo: ProjectSettings;
       admin: typeof admin;
-      app: admin.app.App;
-      auth: admin.auth.Auth;
-      rtdb: admin.database.Database;
-      db: admin.firestore.Firestore;
-      storage: admin.storage.Storage;
+      app: App;
+      auth: Auth;
+      rtdb: Database;
+      db: Firestore;
+      storage: Storage;
       bucket: Bucket;
-      types: typeof admin.firestore;
+      types: typeof firestoreNs;
     }>;
   }
 ).tools;

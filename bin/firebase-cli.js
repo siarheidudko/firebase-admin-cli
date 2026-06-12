@@ -5,6 +5,12 @@
 const process = require("process");
 const { createInterface } = require("readline");
 const admin = require("firebase-admin");
+const { initializeApp, cert } = require("firebase-admin/app");
+const { getAuth } = require("firebase-admin/auth");
+const { getDatabase } = require("firebase-admin/database");
+const { getFirestore } = require("firebase-admin/firestore");
+const { getStorage } = require("firebase-admin/storage");
+const firestoreNs = require("firebase-admin/firestore");
 const { writeFileSync, existsSync, readFileSync } = require("fs");
 const { join, normalize } = require("path");
 const { getProjectInfo } = require("../utils/getProjectInfo");
@@ -97,11 +103,11 @@ process.on("exit", (code) => {
  */
 const fastcommands = [];
 
-const app = admin.initializeApp({
+const app = initializeApp({
   authDomain: `${projectInfo.serviceAccount.project_id}.firebaseapp.com`,
   databaseURL: `https://${projectInfo.serviceAccount.project_id}.firebaseio.com`,
   storageBucket: `${projectInfo.serviceAccount.project_id}.appspot.com`,
-  credential: admin.credential.cert(projectInfo.serviceAccount),
+  credential: cert(projectInfo.serviceAccount),
 });
 
 function help() {
@@ -113,42 +119,42 @@ fastcommands.push({
   alias: "help()",
 });
 
-const auth = admin.auth();
+const auth = getAuth(app);
 fastcommands.push({
   command: "auth",
   title: "Сall firebase authorization interface",
   alias: "admin.auth()",
 });
 
-const rtdb = admin.database();
+const rtdb = getDatabase(app);
 fastcommands.push({
   command: "rtdb",
   title: "Сall firebase database interface",
   alias: "admin.database()",
 });
 
-const db = admin.firestore();
+const db = getFirestore(app);
 fastcommands.push({
   command: "db",
   title: "Сall firebase firestore interface",
   alias: "admin.firestore()",
 });
 
-const storage = admin.storage();
+const storage = getStorage(app);
 fastcommands.push({
   command: "storage",
   title: "Сall firebase storage interface",
   alias: `admin.storage()`,
 });
 
-const bucket = admin.storage().bucket();
+const bucket = getStorage(app).bucket();
 fastcommands.push({
   command: "bucket",
   title: "Сall firebase storage/bucket interface",
   alias: `admin.storage().bucket()`,
 });
 
-const types = admin.firestore;
+const types = firestoreNs;
 fastcommands.push({
   command: "types",
   title: "Сall firebase firestore types interface",
