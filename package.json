@@ -53,7 +53,7 @@
     "tools"
   ],
   "dependencies": {
-    "firebase-admin": "^14.0.0"
+    "firebase-admin": "^14.1.0"
   },
   "devDependencies": {
     "typescript": "^6.0.3"
