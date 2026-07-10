@@ -1,7 +1,7 @@
 {
   "name": "firebase-admin-cli",
   "description": "Cli for firebase project",
-  "version": "1.2.27",
+  "version": "1.2.28",
   "author": "Siarhei Dudko <sergey@dudko.dev>",
   "funding": [
     {
@@ -56,6 +56,6 @@
     "firebase-admin": "^14.1.0"
   },
   "devDependencies": {
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   }
 }
