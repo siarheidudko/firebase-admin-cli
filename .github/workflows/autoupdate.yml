@@ -147,7 +147,8 @@ jobs:
                 npm test
 
           Claude will leave a status comment on this PR when it finishes.
-          PR-checks will re-run on each new commit.
+          The Claude workflow re-dispatches PR-checks once it is done, so the
+          checks below reflect its pushed fixes.
           EOF
           )
           PR_URL=$(gh pr create \
